@@ -37,15 +37,15 @@ int main() {
 		cin >> X;
 		switch(X){
 			case 1 : {
-				cout << "fitur belum tersedia";
+				// masukkan kode anda di sini
 				break;
 			}
 			case 2 : {
-				cout << "fitur belum tersedia";
+				// masukkan kode anda di sini
 				break;
 			}
 			case 3 : {
-				cout << "fitur belum tersedia";
+				// masukkan kode anda di sini
 				break;
 			}
 			case 4 : {
