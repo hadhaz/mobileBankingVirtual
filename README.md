@@ -8,6 +8,6 @@
 
 
 # Perhatian!!!
-### Mohon untuk melihat-lihat projek sebagai ide
-### Gunakan file untuk menyimpan data secara permanen
-### Gunakan Flowchart sebagai referensi
+#### Mohon untuk melihat-lihat projek sebagai ide
+#### Gunakan file untuk menyimpan data secara permanen
+#### Gunakan Flowchart sebagai referensi
