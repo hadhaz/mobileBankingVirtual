@@ -4,9 +4,36 @@ using namespace std;
 
 bool wantExit = false;
 char quest;
+string username, pass;
+
+void buatAkun();
+void firstPage();
+void fitur1();
+void fitur2();
+void fitur3();
+void fitur4();
+void menuUtama();
+
+int main() {
+	firstPage();
+}
 
 void fitur1(){
-	//tulis kode di sini
+	string nama, saldo;
+    ifstream database;
+    database.open("datasaldo.txt", ios::in);
+    if(database.is_open()){
+        database >> nama >> saldo;
+        if(username == nama){
+            cout << "\n\nInformasi Rekening Anda\n";
+            cout << "username : " << nama << endl;
+            cout << "jumlah saldo : " << saldo << endl;
+			cout << endl;
+        }
+    }
+    else{
+        cout << "Error : System gagal membuka database\n";
+	}
 }
 
 void fitur2(){
@@ -55,12 +82,11 @@ while(not wantExit){
 	cout << " pada tahun ke-" << tahun;
 	}
 }
-	
-int main() {
-	
+
+void menuUtama() {
 	// Input Username & Password
-	string username, pass; bool userValid = false, passValid = false;
-	cout << "~~~ Selamat Datang di Bank krut ~~~" 
+	bool userValid = false, passValid = false;
+	cout << "~~~ Selamat Datang di Bank Krut ~~~" 
 	<< endl << "Username : ";
 	cin >> username;
 	cout << "Password : ";
@@ -82,8 +108,7 @@ int main() {
 		}
 	}
 	database.close();
-	
-	//Masuk ke menu
+
 	if(userValid && passValid){
 		int X;
 		cout << "\n~~~ Silakan pilih fitur yang anda inginkan ~~~\n";
@@ -110,15 +135,47 @@ int main() {
 		}
 	}	
 	
+	else{
+		cout << "Username atau Password yang anda masukkan salah\n";
+		cout << "Apakah anda ingin keluar? (Y/N)\n";
+		
+	}
+}
+
+void buatAkun(){
+	string buatUsername, buatPass;
+	cout << "Terima kasih atas kepercayaan anda kepada Bank Krut\n";
+	cout << "Masukkan Username yang ingin anda buat : \n";
+	cin >> buatUsername;
+	cout << "Masukkan Password yang ingin and buat : \n";
+	cin >> buatPass;
+	ofstream database;
+	database.open("data.txt", ios :: app | ios::in);
+	if(database.is_open()){
+		database <<"\n" << buatUsername << " " << buatPass;
+		database.close();
+	}
 	else
-		cout << "Username dan password yang anda masukkan salah \n";
-		cout << "Apakah anda ingin membuat akun baru (Y/N)?\n";
-		cin >> quest;
-		if(quest == 'Y'){
-			cout << "Masukkan Username yang ingin anda buat \n";
-			cin >> username;
-			//buatlah program untuk mengecek database (kalau username sudah ada gagalkan rencana pembuatan)
-			cout << "Masukkan password yang ingin anda buat \n";
+		cout << "Error : System gagal membuka database\n";
+	cout << "Selamat, Akun mobile banking anda berhasil dibuat\n";
+	firstPage();
+}
+
+void firstPage(){
+	int quest;
+	cout << "~~~ Selamat Datang di Bank Krut ~~~\n";
+	cout << "1. Login\n";
+	cout << "2. Buat Akun\n";
+	cout << "Masukkan Pilihan (1/2) : \n";
+	cin >> quest;
+	switch (quest){
+		case 1 : {
+			menuUtama();
 		}
-	
+		case 2 : {
+			buatAkun();
+		}
+		default :
+			return 0;
+	}
 }
