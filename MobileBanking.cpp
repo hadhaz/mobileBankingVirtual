@@ -5,6 +5,7 @@ using namespace std;
 char quest;
 string username, pass;
 fstream database;
+bool found = false;
 
 void firstPage();
 void buatAkun();
@@ -24,7 +25,7 @@ void firstPage(){
 	cout << "~~~ Selamat Datang di Bank Krut ~~~\n";
 	cout << "1. Login\n";
 	cout << "2. Buat Akun\n";
-	cout << "Masukkan Pilihan (1/2) :";
+	cout << "Masukkan Pilihan (1/2) : ";
 	cin >> quest;
 	switch (quest){
 		case '1' : {
@@ -41,35 +42,43 @@ void firstPage(){
 }
 
 void buatAkun(){
-	string buatUsername, buatPass;
-	cout << "Terima kasih atas kepercayaan anda kepada Bank Krut\n";
-	cout << "Masukkan Username yang ingin anda buat :\n";
+	string buatUsername, buatPass, cek, cache;
+	cout << "\nTerima kasih atas kepercayaan anda kepada Bank Krut\n";
+	cout << "Masukkan Username yang ingin anda buat : ";
 	cin >> buatUsername;
-	cout << "Masukkan Password yang ingin and buat :\n";
+	cout << "Masukkan Password yang ingin and buat : ";
 	cin >> buatPass;
 
 	database.open("data.txt", ios :: app | ios::in);
+	
 	if(database.is_open()){
+		while(database >> cek >> cache){
+			if(cek == buatUsername){
+				cout << "Username sudah dibuat, silahkan masuk atau buat username lain\n";
+				cout << endl; firstPage();
+			}
+		}
 		database << buatUsername << " " << buatPass;
+		cout << "Selamat, Akun mobile banking anda berhasil dibuat\n";
 		database.close();
+		firstPage();
 	}
 	else
 		cout << "Error : System gagal membuka database\n";
-	cout << "Selamat, Akun mobile banking anda berhasil dibuat\n";
-	firstPage();
 }
 
 void menuUtama() {
 	// Input Username & Password
 	bool userValid = false, passValid = false;
-	cout << "~~~ Selamat Datang di Bank Krut ~~~" << endl 
-	<< "Username : ";
+	cout << "\n~~~ Selamat Datang di Bank Krut ~~~\n"; 
+	cout << "Username : ";
 	cin >> username;
 	cout << "Password : ";
 	cin >> pass;
 	
 	//pencocokan masukan dengan database
 	string str1, str2;
+		
 	database.open("data.txt", ios::in);
 	if(database.is_open()){
 		while(!database.eof() && not userValid && not passValid){
@@ -116,7 +125,7 @@ void menuUtama() {
 	}	
 	
 	else{
-		cout << "Username atau Password yang anda masukkan salah\n";
+		cout << "\nUsername atau Password yang anda masukkan salah\n";
 		exitOption();
 	}
 }
@@ -125,11 +134,12 @@ void fitur1(){
 	string nama, saldo;
     database.open("datasaldo.txt", ios::in);
     if(database.is_open()){
-        database >> nama >> saldo;
+		while(database >> nama >> saldo)
         if(username == nama){
             cout << "\n\nInformasi Rekening Anda\n";
             cout << "username : " << nama << endl;
             cout << "jumlah saldo : " << saldo << "\n\n";
+            database.close();
 			exitOption();
         }
     }
@@ -139,7 +149,52 @@ void fitur1(){
 }
 
 void fitur2(){
-	// tulis kode di sini
+	ofstream newDatabase;
+	string Bank, str1, str2;
+	long long nominal, saldo;
+	cout << "1. jagoan\n2. biri\n3. bini\n4. mandi\n5. bisia\n";
+	cout << "Masukkan tujuan Bank : \n";
+	cin >> Bank;
+	database.open("databank.txt", ios::in);
+	while(database >> str1){
+		if(str1 == Bank){
+			found = true;
+			break;
+		}
+	}
+	database.close();
+	//
+	database.open("datasaldo.txt", ios :: in | ios :: out);
+	newDatabase.open("temp.txt", ios :: out);
+	if(found){
+		cout << "Masukkan nominal : \n";
+		cin >> nominal;
+		while(database >> str1 >> str2){
+			if(str1 != username)
+				newDatabase << str1 << " " << str2 << endl;
+		}
+	}
+	else{
+		cout << "Bank tidak ditemukan\n";
+		exitOption();
+	}
+	//pengecekan saldo
+	if(nominal > saldo){
+		cout << "Maaf Saldo Tidak Cukup!\n";
+	}
+	else{
+		saldo = saldo - nominal;
+		newDatabase << username << " " << saldo << "\n";
+		cout << "Transaksi Sukses";
+		
+		database.close();
+		newDatabase.close();
+
+		remove("datasaldo.txt");
+		rename("temp.txt", "datasaldo.txt");
+		
+	}
+	
 }
 
 void fitur3(){
@@ -185,7 +240,7 @@ void fitur3(){
 
 	remove("data.txt");
 	rename("temp.txt", "data.txt");
-	cout << "Selamat password anda berhasil diganti\n";
+	cout << "Selamat Password Anda Berhasil Diganti\n";
 	exitOption;
 }
 
@@ -232,11 +287,13 @@ void exitOption(){
 	cin >> quest;
 	if(quest == 'Y')
 		exit(0);
-	else if(quest == 'N')
-		menuUtama();
+	else if(quest == 'N'){
+		cout << endl;
+		firstPage();
+	}
 	else{
 		cout << "Kode yang anda masukkan tidak tepat!\n";
-		cout << "Masukkan Y untuk ya atau N untuk tidak";
+		cout << "Masukkan Y untuk ya atau N untuk tidak\n";
 		exitOption();
 	}
 }
